@@ -1,9 +1,11 @@
-package service;
+package com.ryan.taskmanager.service;
 
-import model.Task;
-import model.TaskStatus;
+import com.ryan.taskmanager.model.Task;
+import com.ryan.taskmanager.model.TaskStatus;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import repository.TaskRepository;
+import org.springframework.web.server.ResponseStatusException;
+import com.ryan.taskmanager.repository.TaskRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +23,7 @@ public class TaskService {
         return repository.findAll();
     }
 
-    public Task creatTask(Task task){
+    public Task createTask(Task task){
 
         if (task.getStatus() == null)task.setStatus(TaskStatus.PENDING);
         return repository.save(task);
@@ -31,7 +33,7 @@ public class TaskService {
     public Task findTaskById(int id){
         Optional<Task> task = repository.findById(id);
 
-        return task.orElseThrow(() -> new RuntimeException("Task not found"));
+        return task.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found"));
     }
 
     public Task updateById(int id, Task update){
@@ -46,7 +48,7 @@ public class TaskService {
 
     }
 
-    public void deletTaskById(int id){
+    public void deleteTaskById(int id){
 
         Task task = findTaskById(id);
         repository.delete(task);
